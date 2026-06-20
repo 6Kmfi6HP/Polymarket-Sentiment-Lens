@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       includeClosed,
     });
 
-    const staleCount = data.filter(m => m.stale).length;
+    const staleCount = data.filter((m: any) => m.stale).length;
 
     return NextResponse.json({
       data,

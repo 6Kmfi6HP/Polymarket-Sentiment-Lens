@@ -58,12 +58,13 @@ export default function MarketList() {
     <div id="market-list-section" className="space-y-6">
       
       {/* Category selector capsules */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-100">
-        <Layers className="h-4 w-4 text-slate-400 shrink-0 mr-1" />
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-100" role="group" aria-label="Filter categories">
+        <Layers className="h-4 w-4 text-slate-400 shrink-0 mr-1" aria-hidden="true" />
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setCategory(cat.id)}
+            aria-pressed={category === cat.id}
             className={`px-3 py-1 text-xs font-semibold rounded-full border tracking-tight shrink-0 transition-all cursor-pointer ${
               category === cat.id
                 ? 'bg-slate-900 border-slate-900 text-white'
@@ -79,10 +80,11 @@ export default function MarketList() {
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         
         {/* Search Input block */}
-        <form onSubmit={handleSearchSubmit} className="relative w-full md:max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <form onSubmit={handleSearchSubmit} className="relative w-full md:max-w-md" role="search">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" aria-hidden="true" />
           <input
             type="text"
+            aria-label="Search prediction markets"
             placeholder="Search prediction markets..."
             value={q}
             onChange={(e) => {
@@ -105,9 +107,10 @@ export default function MarketList() {
         {/* Sort select details */}
         <div className="flex items-center gap-3 w-full md:w-auto self-stretch md:self-auto justify-between">
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500 font-sans">
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-            <span>Sort By</span>
+            <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
+            <label htmlFor="sort-markets">Sort By</label>
             <select
+              id="sort-markets"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
               className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 text-xs px-2.5 py-1.5 rounded-lg outline-none cursor-pointer font-sans"
@@ -125,8 +128,9 @@ export default function MarketList() {
             disabled={isValidating}
             className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-300 bg-white px-2.5 py-1.5 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
             title="Reload Markets list"
+            aria-label="Reload Markets list"
           >
-            <RefreshCw className={`h-3 w-3 ${isValidating ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3 w-3 ${isValidating ? 'animate-spin' : ''}`} aria-hidden="true" />
             <span className="hidden sm:inline">Refresh</span>
           </button>
         </div>

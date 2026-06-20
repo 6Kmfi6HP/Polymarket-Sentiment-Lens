@@ -1,0 +1,3 @@
+## 2024-06-20 - Form Accessibility and Decorative Icons
+**Learning:** React form inputs without explicit labels need `aria-label`, and interactive filters should indicate selection state using `aria-pressed`. Decorative icons placed next to text should be hidden from screen readers using `aria-hidden="true"` to prevent redundant/confusing announcements. The `<select>` element needs an explicit associated label via `htmlFor`.
+**Action:** Always verify form inputs have labels or `aria-label`. Use `aria-pressed` for toggle buttons. Ensure decorative icons include `aria-hidden="true"`. Make sure `<select>` has a proper label.

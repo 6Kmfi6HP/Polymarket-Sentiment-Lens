@@ -28,7 +28,7 @@ export async function GET(
     });
 
     // Mapped items
-    const parsedData = newsItems.map((item) => ({
+    const parsedData = newsItems.map((item: any) => ({
       id: item.id,
       title: item.title,
       url: item.url,
@@ -48,9 +48,9 @@ export async function GET(
 
     // Find latest analyzed date
     const latestAnalysis = newsItems
-      .filter((n) => n.sentiment !== null)
-      .map((n) => n.sentiment!.analyzedAt)
-      .sort((a, b) => b.getTime() - a.getTime())[0];
+      .filter((n: any) => n.sentiment !== null)
+      .map((n: any) => n.sentiment!.analyzedAt)
+      .sort((a: any, b: any) => b.getTime() - a.getTime())[0];
 
     return NextResponse.json({
       data: parsedData,
