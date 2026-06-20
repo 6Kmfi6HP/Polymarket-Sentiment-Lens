@@ -1,0 +1,142 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Market {
+  id               String   @id
+  provider         String
+  question         String
+  slug             String?
+  category         String?
+  conditionId      String?
+  clobTokenIdsJson String?
+  outcomesJson     String
+  outcomePricesJson String
+  yesPrice         Float?
+  noPrice          Float?
+  volume           Float?
+  liquidity        Float?
+  endDate          DateTime?
+  active           Boolean  @default(true)
+  closed           Boolean  @default(false)
+  rawJson          String
+  sourceUpdatedAt  DateTime?
+  fetchedAt        DateTime
+  expiresAt        DateTime
+
+  newsItems        NewsItem[]
+  priceSnapshots   MarketPriceSnapshot[]
+
+  @@index([active])
+  @@index([volume])
+  @@index([liquidity])
+  @@index([expiresAt])
+}
+
+model MarketPriceSnapshot {
+  id        String   @id @default(cuid())
+  marketId  String
+  yesPrice  Float?
+  noPrice   Float?
+  midpoint  Float?
+  spread    Float?
+  volume    Float?
+  liquidity Float?
+  capturedAt DateTime
+
+  market Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@index([marketId, capturedAt])
+}
+
+model NewsSource {
+  id          String   @id @default(cuid())
+  name        String
+  type        String
+  rsshubPath  String
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bindings    MarketNewsSource[]
+}
+
+model MarketNewsSource {
+  id          String @id @default(cuid())
+  marketId    String
+  sourceId    String
+  query       String?
+  weight      Float  @default(1.0)
+
+  newsSource  NewsSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([marketId, sourceId, query])
+}
+
+model NewsItem {
+  id             String   @id @default(cuid())
+  marketId       String
+  sourceId       String?
+  title          String
+  summary        String?
+  url            String
+  canonicalUrl   String?
+  urlHash        String
+  publishedAt    DateTime?
+  fetchedAt      DateTime
+  rawJson        String?
+
+  market         Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  sentiment      SentimentResult?
+
+  @@unique([marketId, urlHash])
+  @@index([marketId, publishedAt])
+  @@index([urlHash])
+}
+
+model SentimentResult {
+  id          String   @id @default(cuid())
+  newsItemId  String   @unique
+  textHash    String
+  inputText   String
+  sentiment   String
+  confidence  Float
+  score       Float
+  model       String
+  rawJson     String
+  analyzedAt  DateTime
+
+  newsItem    NewsItem @relation(fields: [newsItemId], references: [id], onDelete: Cascade)
+
+  @@index([sentiment])
+  @@index([textHash])
+  @@index([analyzedAt])
+}
+
+model RefreshJob {
+  id          String   @id @default(cuid())
+  type        String
+  status      String
+  targetId    String?
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  error       String?
+  metaJson    String?
+  createdAt   DateTime @default(now())
+
+  @@index([type, status])
+  @@index([targetId])
+  @@index([createdAt])
+}
+
+model CronLock {
+  name       String   @id
+  lockedAt   DateTime
+  expiresAt  DateTime
+  owner      String
+}

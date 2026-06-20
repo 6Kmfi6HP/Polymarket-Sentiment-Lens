@@ -1,0 +1,6 @@
+{
+  "name": "Polymarket Sentiment Lens",
+  "description": "An explanatory panel for Polymarket prediction odds backed by real-time news and FinBERT financial sentiment analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
